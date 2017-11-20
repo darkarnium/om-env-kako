@@ -1,0 +1,4 @@
+# Permit ingress traffic.
+<% node['om-env-kako']['iptables']['permit'].each do |p| -%>
+-A INPUT -p tcp -m tcp --dport <%= p %> -j ACCEPT
+<% end -%>

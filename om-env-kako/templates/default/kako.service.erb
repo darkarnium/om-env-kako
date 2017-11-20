@@ -1,0 +1,14 @@
+[Unit]
+Description=Kako Service
+After=syslog.target
+
+[Service]
+Type=simple
+User=<%= @user %>
+WorkingDirectory=<%= @dir %>
+ExecStart=/usr/bin/env python2.7 <%= @script %>
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target

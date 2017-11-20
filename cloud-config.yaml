@@ -1,0 +1,27 @@
+#cloud-config
+
+runcmd:
+  # Update Apt and fetch required tools.
+  - apt-get -y update
+  - apt-get -y install git bash
+  - apt-get -y install build-essential
+  # Ditch UFW.
+  - ufw disable
+  - apt-get -y purge ufw
+  # Ensure environment is setup.
+  - export HOME=/root
+  # Fetch and install Chef.
+  - curl -L -s https://packages.chef.io/files/stable/chefdk/2.3.4/ubuntu/16.04/chefdk_2.3.4-1_amd64.deb -o /var/tmp/chefdk_2.3.4-1_amd64.deb
+  - dpkg -i /var/tmp/chefdk_2.3.4-1_amd64.deb
+  # Check-out the environment cookbook.
+  - git clone git@github.com:darkarnium/om-env-kako.git /var/tmp/provisioning
+  # Create the Chef zero repository.
+  - cd /var/tmp/provisioning/om-env-kako/
+  - berks vendor
+  - mkdir -p /var/tmp/chef
+  - mv ./berks-cookbooks /var/tmp/chef/cookbooks
+  - cd /var/tmp/chef/cookbooks
+  # Kick off chef.
+  - echo '{"om-env-kako":{"aws":{"access_key_id":"X","secret_access_key":"Y"},"app":{"git":{"use":true},"conf":{"results":{"topic":"Z"}}}}}' > /tmp/chef/chef.json
+  - chmod 600 /var/tmp/chef/chef.json
+  - chef-client -z -o 'om-env-kako::default' -j /var/tmp/chef/chef.json

@@ -1,0 +1,6 @@
+*nat
+<% node['om-env-kako']['iptables']['redirect'].each do |r| -%>
+<% if r.key?('in') && r.key?('out') -%>
+-A PREROUTING -p tcp --dport <%= r['in'] %> -j REDIRECT --to-port <%= r['out'] %>
+<% end -%>
+<% end -%>
