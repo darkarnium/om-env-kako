@@ -4,7 +4,7 @@ default['om-env-kako']['app']['user'] = 'kako'
 
 # Set the source git URL.
 default['om-env-kako']['app']['git']['use'] = true
-default['om-env-kako']['app']['git']['path'] = 'git@github.com:darkarnium/kako.git'
+default['om-env-kako']['app']['git']['path'] = 'https://github.com/darkarnium/kako.git'
 default['om-env-kako']['app']['git']['branch'] = 'master'
 
 # Configuration additions.

@@ -17,13 +17,6 @@ if node['om-env-kako']['app']['git']['use']
     notifies :run, 'execute[chown-kako]', :immediately
     reference node['om-env-kako']['app']['git']['branch']
     repository node['om-env-kako']['app']['git']['path']
-    environment(
-      GIT_SSH_COMMAND: [
-        'ssh',
-        ' -o UserKnownHostsFile=/dev/null',
-        ' -o StrictHostKeyChecking=no',
-      ].join('')
-    )
   end
 
   execute 'chown-kako' do
