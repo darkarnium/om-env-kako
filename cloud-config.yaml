@@ -22,6 +22,6 @@ runcmd:
   - mv ./berks-cookbooks /var/tmp/chef/cookbooks
   - cd /var/tmp/chef/cookbooks
   # Kick off chef.
-  - echo '{"om-env-kako":{"aws":{"access_key_id":"X","secret_access_key":"Y"},"app":{"git":{"use":true},"conf":{"results":{"topic":"Z"}}}}}' > /tmp/chef/chef.json
+  - echo '{"om-env-kako":{"aws":{"access_key_id":"X","secret_access_key":"Y"},"app":{"git":{"use":true},"conf":{"results":{"topic":"Z"}}}}}' > /var/tmp/chef/chef.json
   - chmod 600 /var/tmp/chef/chef.json
   - chef-client -z -o 'om-env-kako::default' -j /var/tmp/chef/chef.json
