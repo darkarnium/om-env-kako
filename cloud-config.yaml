@@ -14,7 +14,7 @@ runcmd:
   - curl -L -s https://packages.chef.io/files/stable/chefdk/2.3.4/ubuntu/16.04/chefdk_2.3.4-1_amd64.deb -o /var/tmp/chefdk_2.3.4-1_amd64.deb
   - dpkg -i /var/tmp/chefdk_2.3.4-1_amd64.deb
   # Check-out the environment cookbook.
-  - git clone git@github.com:darkarnium/om-env-kako.git /var/tmp/provisioning
+  - git clone https://github.com/darkarnium/om-env-kako.git /var/tmp/provisioning
   # Create the Chef zero repository.
   - cd /var/tmp/provisioning/om-env-kako/
   - berks vendor
