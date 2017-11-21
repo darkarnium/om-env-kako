@@ -18,6 +18,12 @@ default['sysctl']['params']['net']['ipv4']['ip_local_port_range'] = '10240 61440
 # Decrease the time before sockets in TIME_WAIT expire.
 default['sysctl']['params']['net']['ipv4']['tcp_fin_timeout'] = 30
 
+# TODO: The firewall does not handle IPv6, so disable it. This is not the right way
+#       to do things, but in the interest of time... Sorry Mark :)
+default['sysctl']['params']['net']['ipv6']['conf']['lo']['disable_ipv6'] = 1
+default['sysctl']['params']['net']['ipv6']['conf']['all']['disable_ipv6'] = 1
+default['sysctl']['params']['net']['ipv6']['conf']['default']['disable_ipv6'] = 1
+
 # Increase the maximum number of open files.
 default['om-env-kako']['ulimit']['nofile']['soft'] = 81_920
 default['om-env-kako']['ulimit']['nofile']['hard'] = 92_160
