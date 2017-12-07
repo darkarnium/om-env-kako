@@ -100,7 +100,9 @@ file '/etc/cron.d/update-kako' do
   content [
     '*/30 * * * *',
     'root',
+    'cd /var/tmp/chef/ &&',
     'chef-client -z -o "om-env-kako::default" -j /var/tmp/chef/chef.json',
+    '> /var/log/chef-client.log 2>&1',
     "\n",
   ].join(' ')
   owner 'root'
