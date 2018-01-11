@@ -18,28 +18,17 @@ mv ./berks-cookbooks /var/tmp/chef/cookbooks
 cd /var/tmp/chef/cookbooks
 
 # Enable password authentication for ssh and kick off Chef.
-if [ ! -f /var/tmp/chef/chef.json ]; then
-    cat > /var/tmp/chef/chef.json <<-ENDOFJSON
+cat > /var/tmp/chef/chef.json <<-ENDOFJSON
 {
   "om-env-kako": {
     "aws": {
       "access_key_id": "X",
       "secret_access_key": "Y"
-    },
-    "app": {
-      "git": {
-        "use": false
-      },
-      "conf": {
-        "results": {
-          "topic": "Z"
-        }
-      }
     }
   }
 }
 ENDOFJSON
-fi
+
 
 chmod 600 /var/tmp/chef/chef.json
 chef-client -z -o 'om-env-kako::default' -j /var/tmp/chef/chef.json

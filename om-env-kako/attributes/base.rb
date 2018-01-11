@@ -6,7 +6,7 @@ default['om-env-kako']['aws']['secret_access_key'] = ''
 default['om-env-kako']['base']['packages'] = [
   'vim-nox',
   'tmux',
-  'git',
+  'git'
 ]
 
 # Management subnets to permitt SSH traffic from.
@@ -16,11 +16,17 @@ default['om-env-kako']['iptables']['management'] = [
 
 # List of ports to permit from all.
 default['om-env-kako']['iptables']['permit'] = [
+  '1900',
   '2323',
   '5555',
   '7547',
   '8080',
+  '8081',
   '8443',
+  '10000',
+  '37215',
+  '49152',
+  '52869'
 ]
 
 # Redirect inbound TCP traffic in order to allow simulations to accept traffic
@@ -28,7 +34,15 @@ default['om-env-kako']['iptables']['permit'] = [
 default['om-env-kako']['iptables']['redirect'] = [
   {
     'in' => 23,
-    'out' => 2323,
+    'out' => 2323
+  },
+  {
+    'in' => 80,
+    'out' => 8080
+  },
+  {
+    'in' => 443,
+    'out' => 8443
   },
 ]
 

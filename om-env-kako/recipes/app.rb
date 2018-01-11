@@ -5,29 +5,16 @@
 
 # Ensure the app user exists.
 user node['om-env-kako']['app']['user'] do
-  shell '/bin/false'
+  shell '/usr/sbin/nologin'
   home node['om-env-kako']['app']['home']
-  manage_home false
+  manage_home true
 end
 
-# Fetch and install the kako from the given branch - if required.
-if node['om-env-kako']['app']['git']['use']
-  git node['om-env-kako']['app']['home'] do
-    action :sync
-    notifies :run, 'execute[chown-kako]', :immediately
-    reference node['om-env-kako']['app']['git']['branch']
-    repository node['om-env-kako']['app']['git']['path']
-  end
-
-  execute 'chown-kako' do
-    action :nothing
-    notifies :restart, 'service[kako]', :delayed
-    command [
-      'chown -R',
-      node['om-env-kako']['app']['user'],
-      node['om-env-kako']['app']['home'],
-    ].join(' ')
-  end
+# Ensure simulations are up to date.
+git node['om-env-kako']['simulations']['home'] do
+  repository node['om-env-kako']['simulations']['git']
+  revision 'master'
+  action :sync
 end
 
 # Create AWS directories.
@@ -43,7 +30,6 @@ end
 template ::File.join(node['om-env-kako']['app']['home'], '.aws', 'credentials') do
   source 'aws/credentials.erb'
   owner node['om-env-kako']['app']['user']
-  group node['om-env-kako']['app']['user']
   mode '0600'
 end
 
@@ -51,19 +37,17 @@ end
 template ::File.join(node['om-env-kako']['app']['home'], '.aws', 'config') do
   source 'aws/config.erb'
   owner node['om-env-kako']['app']['user']
-  group node['om-env-kako']['app']['user']
   mode '0600'
 end
 
-# Ensure Python 2 is installed.
-python_runtime '2'
+# Ensure Python 3 is installed.
+python_runtime '3'
 
-# Install required Python modules.
-pip_requirements "#{node['om-env-kako']['app']['home']}/requirements.txt"
+# Install kako from pypi.
+python_package 'kako'
 
 # Write out the correct configuration document for kako.
-deploy_configuration "#{node['om-env-kako']['app']['home']}/conf/kako.dist.yaml" do
-  destination "#{node['om-env-kako']['app']['home']}/conf/kako.yaml"
+deploy_configuration ::File.join(node['om-env-kako']['app']['home'], 'kako.yaml') do
   additions node['om-env-kako']['app']['conf']
 end
 
@@ -76,21 +60,28 @@ end
 
 # Install the systemd unit file.
 template '/etc/systemd/system/kako.service' do
-  mode 0644
+  mode '0644'
   owner 'root'
   group 'root'
   source 'kako.service.erb'
   variables(
     dir: node['om-env-kako']['app']['home'],
     user: node['om-env-kako']['app']['user'],
-    script: "#{node['om-env-kako']['app']['home']}/runner.py"
+    script: [
+      '/usr/local/bin/kako-master',
+      '--configuration-file',
+      ::File.join(node['om-env-kako']['app']['home'], 'kako.yaml'),
+      '--simulation-path',
+      node['om-env-kako']['simulations']['home']
+    ].join(' ')
   )
   notifies :run, 'execute[systemctl-daemon-reload]', :immediately
+  notifies :restart, 'service[kako]', :delayed
 end
 
 # Ensure the service runs on boot, and start it.
 service 'kako' do
-  supports status: true, restart: true
+  supports [status: true, restart: true]
   action [:enable, :start]
 end
 
@@ -103,7 +94,7 @@ file '/etc/cron.d/update-kako' do
     'cd /var/tmp/chef/ &&',
     'chef-client -z -o "om-env-kako::default" -j /var/tmp/chef/chef.json',
     '> /var/log/chef-client.log 2>&1',
-    "\n",
+    "\n"
   ].join(' ')
   owner 'root'
   group 'root'

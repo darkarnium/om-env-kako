@@ -3,7 +3,7 @@ maintainer 'Peter Adkins'
 maintainer_email 'pete@kernelpicnic.net'
 description 'Installs/Configures an kako node'
 long_description 'Installs/Configures an kako node'
-version '0.4.0'
+version '1.0.0'
 
 depends 'apt', '= 5.0.0'
 depends 'ntp', '= 3.2.0'
