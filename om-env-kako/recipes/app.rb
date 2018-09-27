@@ -44,7 +44,9 @@ end
 python_runtime '3'
 
 # Install kako from pypi.
-python_package 'kako'
+python_package 'kako' do
+  install_options '--ignore-installed PyYAML'
+end
 
 # Write out the correct configuration document for kako.
 deploy_configuration ::File.join(node['om-env-kako']['app']['home'], 'kako.yaml') do
