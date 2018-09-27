@@ -4,6 +4,8 @@ After=syslog.target
 
 [Service]
 Type=simple
+Environment=LC_ALL=C.UTF-8
+Environment=LANG=C.UTF-8
 User=<%= @user %>
 WorkingDirectory=<%= @dir %>
 ExecStart=<%= @script %>
